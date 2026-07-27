@@ -237,22 +237,31 @@ def _answer_counts(dc, cfg):
 
 # ---------------------------------------------------------------- 퀘스트 게시
 
-def quest(dc, cfg, state):
-    """오늘 Day의 커리큘럼 섹션을 #퀘스트에 올리고 스레드를 연다."""
+def quest(dc, cfg, state, day=None):
+    """오늘 Day의 커리큘럼 섹션을 #퀘스트에 올리고 스레드를 연다.
+
+    day를 넘기면 그 Day를 강제로 낸다 (--dry-run 미리보기용).
+    """
     day1 = S.parse_date(cfg["schedule"]["day1_date"])
     today = _today(cfg)
-    day = S.current_day(day1, today)
     if day is None:
-        print("  오늘은 퀘스트 없는 날 (주말이거나 기간 밖)")
-        return
+        day = S.current_day(day1, today)
+        if day is None:
+            print("  오늘은 퀘스트 없는 날 (주말이거나 기간 밖)")
+            print("  특정 Day를 미리 보려면: python bot/main.py quest --dry-run --day 7")
+            return
+        date_str = today.isoformat()
+    else:
+        date_str = S.day_to_date(day1, day).isoformat()
 
     posted = state.setdefault("quest_posted", {})
-    if str(day) in posted:
+    if str(day) in posted and not dc.dry_run:
         print(f"  Day {day} 는 이미 게시됨")
         return
 
-    body = curriculum.quest_post(day, today.isoformat(), cfg.get("repo_url"))
-    title = f"[Day {day}] {curriculum.section(day)[0]}"
+    body = curriculum.quest_post(day, date_str, cfg.get("repo_url"))
+    title = curriculum.section(day)[0]  # 이미 'Day N · 제목' 형태다
     res = dc.create_forum_post(cfg["channels"]["quest"], title, body)
-    posted[str(day)] = {"thread_id": res.get("id"), "on": today.isoformat()}
+    if not dc.dry_run:
+        posted[str(day)] = {"thread_id": res.get("id"), "on": date_str}
     print(f"  Day {day} 게시 완료")

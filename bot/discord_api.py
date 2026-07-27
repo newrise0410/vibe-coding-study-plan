@@ -128,7 +128,12 @@ class Discord:
     def create_forum_post(self, channel_id: str, title: str, content: str):
         chunks = split_message(content)
         if self.dry_run:
-            print(f"--- [dry-run] forum post '{title}' ({len(chunks)} chunks) ---")
+            print(f"┌─ [dry-run] 포럼 글: {title}")
+            print(f"│  {len(chunks)}개 메시지로 나뉨\n")
+            for i, c in enumerate(chunks, 1):
+                print(f"───── {i}/{len(chunks)} ({len(c)}자) " + "─" * 28)
+                print(c)
+            print("└" + "─" * 50)
             return {"id": "dry-run"}
         thread = self._req(
             "POST",
