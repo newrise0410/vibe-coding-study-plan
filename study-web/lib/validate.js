@@ -10,6 +10,10 @@ import { fieldsFor, requiredFor, MIN_CHARS } from './dayFields.js';
 // curriculum 안내문을 그대로 붙여넣은 경우를 잡는다.
 const PLACEHOLDER = new Set(['', '-', '.', 'x', 'ㅇ', '없음', '없슴', '패스', '생략', 'n/a']);
 
+// 우리 Cloudinary 계정에서 온 주소만 받는다. 남의 주소를 저장하지 않는다.
+export const CLOUDINARY_URL = /^https:\/\/res\.cloudinary\.com\/[\w-]+\/image\/upload\/[\w./,%-]+$/;
+export const MAX_IMAGES = 6;
+
 function isBlank(v) {
   const s = (v ?? '').trim();
   if (!s) return true;
@@ -114,9 +118,19 @@ export function validateSubmission(day, body) {
     errors.minutesSpent = '0~600 사이의 숫자여야 합니다';
   }
 
-  const imageUrls = Array.isArray(body?.imageUrls)
-    ? body.imageUrls.filter((u) => typeof u === 'string' && /^https:\/\/res\.cloudinary\.com\//.test(u))
-    : [];
+  // 스샷은 칸별로 담는다. Day 15 는 Lighthouse 와 카톡 미리보기가 별개 칸이다.
+  // 여기도 화이트리스트다 — 그 Day 에 없는 칸 이름으로 보내면 버린다.
+  const imageKeys = new Set(spec.filter((f) => f.kind === 'image').map((f) => f.key));
+  const images = {};
+  if (body?.images && typeof body.images === 'object' && !Array.isArray(body.images)) {
+    for (const [key, list] of Object.entries(body.images)) {
+      if (!imageKeys.has(key) || !Array.isArray(list)) continue;
+      const urls = list
+        .filter((u) => typeof u === 'string' && CLOUDINARY_URL.test(u))
+        .slice(0, MAX_IMAGES);
+      if (urls.length) images[key] = urls;
+    }
+  }
 
   if (Object.keys(errors).length > 0) return { ok: false, errors, value: null };
 
@@ -126,7 +140,7 @@ export function validateSubmission(day, body) {
     value: {
       day,
       fields,
-      imageUrls,
+      images,
       minutesSpent: Number.isFinite(minutes) ? minutes : null,
     },
   };

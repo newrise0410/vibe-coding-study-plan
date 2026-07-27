@@ -53,6 +53,8 @@ Day별 필드 정의, 서버 검증, 일정 계산(주말 건너뛰기), 이탈 
 | `auth.js` | Day 10 | OAuth, 401/403 구분, **권한 검사는 API에서** |
 | `app/api/submissions/route.js` | Day 6·8 | 라우트, 상태 코드, 에러를 사용자에게 안 보이기 |
 | `lib/schedule.js` | — | Day↔날짜. 이탈은 퀘스트 있는 날만 센다 |
+| `lib/cloudinary.js` | Day 9 | 업로드 서명 (서버 전용) |
+| `lib/imageUrl.js` | Day 5·6 | 클라이언트도 쓰는 URL 헬퍼. 서버 코드와 일부러 분리 |
 | `lib/dayFields.js` | 전체 | Day마다 다른 인증 필드 |
 
 `lib/dayFields.js`가 이 프로젝트에서 가장 값진 파일입니다. 커리큘럼의 인증 블록 16개를 전부
@@ -64,8 +66,6 @@ Day별 필드 정의, 서버 검증, 일정 계산(주말 건너뛰기), 이탈 
 
 - `/quest/[day]` — `curriculum/*.md`를 렌더하는 화면
 - `/admin/s/[id]` — 인증 상세와 **되돌려보내기**. 지금은 행렬에서 링크만 걸려 있습니다
-- **스샷 업로드 (Day 9)** — `dayFields.js`에 `kind: 'image'`가 정의돼 있지만 Cloudinary
-  서명 발급과 업로드 UI가 없습니다. 폼에서 해당 칸은 아직 안 그려집니다
 - 뱃지 — `/me`에서 계산해 보여주기만 하고 저장하지 않습니다
 - Day 12–13 결제 — 이 앱엔 해당 없음. `DESIGN.md`의 대안 참조
 

@@ -41,7 +41,11 @@ export default async function SubmitPage({ params }) {
         day={day}
         fields={fields}
         required={requiredFor(day)}
-        initial={initial ? { fields: initial.fields, minutesSpent: initial.minutesSpent } : null}
+        initial={
+          initial
+            ? { fields: initial.fields, images: initial.images, minutesSpent: initial.minutesSpent }
+            : null
+        }
       />
     </main>
   );

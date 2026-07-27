@@ -8,6 +8,9 @@ import { DAY_FIELDS, REQUIRED, fieldsFor, requiredFor, DAYS } from './dayFields.
 import { validateSubmission, inspect, STATE_LABEL } from './validate.js';
 import { parseDate, dayToDate, currentDay, latestDay, scheduledDaysBetween, toISO } from './schedule.js';
 import { buildMatrix, dayStats } from './matrix.js';
+import { createHash } from 'node:crypto';
+import { sign, INCOMING_TRANSFORM } from './cloudinary.js';
+import { resized } from './imageUrl.js';
 
 let fails = [];
 const check = (name, cond, detail = '') => {
@@ -155,6 +158,43 @@ check('해부 칸 자체가 없음', !('해부' in d0.cells), Object.keys(d0.cel
 check('weak 0', d0.weak === 0, d0.weak);
 // Day 0 의 '답'은 추측이지만 그래도 실하게 써야 한다.
 check('Day 0 의 답도 짧으면 잡힌다', inspect(0, { 부숴보기: 'A 했더니 글씨가 작아졌다', 답: '몰라요' }).weak === 1);
+
+console.log('\n[13] 스샷 — 칸별로 담기고, 우리 계정 주소만 받는다');
+const CL = 'https://res.cloudinary.com/demo/image/upload/v1/dulkkot/day1/abc.jpg';
+const withImg = validateSubmission(1, {
+  fields: { 해부: 'link 7줄 script 24줄, head 3~9', 부숴보기: 'A와 D 둘 다 흑백인데 D는 404' },
+  images: {
+    스샷: [CL, 'https://evil.example.com/x.jpg', 'javascript:alert(1)'],
+    해부: [CL], // 이미지 칸이 아니다
+    없는칸: [CL],
+  },
+});
+check('통과', withImg.ok, withImg.errors);
+check('우리 Cloudinary 주소만 남음', withImg.value.images.스샷.length === 1, withImg.value.images.스샷);
+check('이미지 칸이 아닌 곳은 버림', !('해부' in withImg.value.images));
+check('그 Day 에 없는 칸도 버림', !('없는칸' in withImg.value.images));
+
+const many = validateSubmission(1, {
+  fields: { 해부: 'link 7줄 script 24줄, head 3~9', 부숴보기: 'A와 D 둘 다 흑백인데 D는 404' },
+  images: { 스샷: Array.from({ length: 20 }, (_, i) => `${CL}?${i}`.replace('?', '/v') ) },
+});
+check('장수 상한 적용', many.value.images.스샷.length <= 6, many.value.images.스샷.length);
+
+console.log('\n[14] Cloudinary 서명 — 규칙대로 만들어지나');
+const signature = sign({ folder: 'dulkkot/day1/u1', timestamp: 1700000000, transformation: 'c_limit,w_1600,q_auto' }, 'SECRET');
+// 문서 규칙: 이름순 정렬 → key=value&... → 끝에 secret → sha1
+const expected = createHash('sha1')
+  .update('folder=dulkkot/day1/u1&timestamp=1700000000&transformation=c_limit,w_1600,q_auto' + 'SECRET')
+  .digest('hex');
+check('sha1 이 규칙과 일치', signature === expected, signature);
+check('파라미터 순서가 달라도 같은 서명',
+  sign({ timestamp: 1700000000, transformation: 'c_limit,w_1600,q_auto', folder: 'dulkkot/day1/u1' }, 'SECRET') === expected);
+check('secret 이 바뀌면 서명도 바뀜',
+  sign({ folder: 'a', timestamp: 1 }, 'X') !== sign({ folder: 'a', timestamp: 1 }, 'Y'));
+check('업로드 시 폭 제한이 걸려 있음', INCOMING_TRANSFORM.includes('w_1600'));
+check('URL 옵션으로 축소본을 만든다',
+  resized(CL) === 'https://res.cloudinary.com/demo/image/upload/w_320,q_auto,f_auto/v1/dulkkot/day1/abc.jpg',
+  resized(CL));
 
 console.log();
 if (fails.length) {

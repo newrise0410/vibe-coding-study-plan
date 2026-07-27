@@ -5,6 +5,7 @@ import { collections } from '../../../../lib/mongodb.js';
 import { fieldsFor } from '../../../../lib/dayFields.js';
 import { inspect, STATE_LABEL } from '../../../../lib/validate.js';
 import ReviewPanel from '../../../../components/ReviewPanel.js';
+import { resized } from '../../../../lib/imageUrl.js';
 
 export const dynamic = 'force-dynamic';
 
@@ -73,7 +74,20 @@ export default async function SubmissionPage({ params }) {
                 )}
                 <span className="len">{cell.length}자</span>
               </h3>
-              {value ? (
+              {f.kind === 'image' ? (
+                s.images?.[f.key]?.length ? (
+                  <div className="shots">
+                    {s.images[f.key].map((u) => (
+                      <a key={u} href={u} target="_blank" rel="noreferrer">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={resized(u)} alt="인증 스크린샷" />
+                      </a>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="note">(스샷 없음)</p>
+                )
+              ) : value ? (
                 f.kind === 'url' ? (
                   <p>
                     <a href={value} target="_blank" rel="noreferrer">
@@ -90,20 +104,6 @@ export default async function SubmissionPage({ params }) {
           );
         })}
       </section>
-
-      {s.imageUrls?.length > 0 && (
-        <section>
-          <h2>스샷</h2>
-          <div className="shots">
-            {s.imageUrls.map((u) => (
-              // eslint-disable-next-line @next/next/no-img-element
-              <a key={u} href={u} target="_blank" rel="noreferrer">
-                <img src={u} alt="인증 스크린샷" />
-              </a>
-            ))}
-          </div>
-        </section>
-      )}
 
       <ReviewPanel id={String(s._id)} status={s.status} initialNote={s.reviewNote ?? ''} />
 

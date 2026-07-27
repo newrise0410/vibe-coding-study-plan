@@ -5,6 +5,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import ImageUpload from './ImageUpload.js';
 
 export default function SubmitForm({ day, fields, required, initial }) {
   const router = useRouter();
@@ -13,6 +14,7 @@ export default function SubmitForm({ day, fields, required, initial }) {
     for (const f of fields) base[f.key] = initial?.fields?.[f.key] ?? '';
     return base;
   });
+  const [images, setImages] = useState(() => initial?.images ?? {});
   const [minutes, setMinutes] = useState(initial?.minutesSpent ?? '');
   const [errors, setErrors] = useState({});
   const [busy, setBusy] = useState(false);
@@ -28,7 +30,12 @@ export default function SubmitForm({ day, fields, required, initial }) {
       const res = await fetch('/api/submissions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ day, fields: values, minutesSpent: minutes === '' ? null : Number(minutes) }),
+        body: JSON.stringify({
+          day,
+          fields: values,
+          images,
+          minutesSpent: minutes === '' ? null : Number(minutes),
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -68,7 +75,14 @@ export default function SubmitForm({ day, fields, required, initial }) {
             </label>
             {f.hint && <p className="hint">{f.hint}</p>}
 
-            {f.kind === 'long' ? (
+            {f.kind === 'image' ? (
+              <ImageUpload
+                day={day}
+                fieldKey={f.key}
+                value={images[f.key]}
+                onChange={(urls) => setImages((m) => ({ ...m, [f.key]: urls }))}
+              />
+            ) : f.kind === 'long' ? (
               <textarea id={f.key} rows={4} value={values[f.key]} onChange={set(f.key)} />
             ) : (
               <input
