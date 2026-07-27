@@ -1,0 +1,196 @@
+# 첫 배포 런북
+
+코드는 이미 GitHub `master` 에 있다. 여기부터는 콘솔 작업이고, **동시에 교보재 촬영이다.**
+
+📸 = 지금 아니면 다시 못 찍는다 · 💥 = 일부러 고장 내서 찍는다
+
+> **모든 스샷은 찍고 바로 키를 가린다.** Atlas 연결 문자열, Cloudinary Secret,
+> 구글 OAuth Secret 이 그대로 찍힌다. 가린 뒤에도 미심쩍으면 그 키는 재발급한다.
+
+---
+
+## 0. 먼저 찍을 것 (2분)
+
+스캐폴딩이 이미 끝나 있어서 이 화면을 못 본다. 따로 한 번 돌려서 찍는다.
+
+```bash
+npx create-next-app@latest throwaway
+# TypeScript No / ESLint Yes / Tailwind No / src/ No / App Router Yes / Turbopack Yes / alias No
+```
+
+📸 **선택지 화면** — Day 5 아침 `#공지` 에 박아둘 것. `operator-guide.md` 가 명시적으로 요구한다.
+
+찍었으면 `throwaway` 폴더는 지운다.
+
+---
+
+## 1. MongoDB Atlas (Day 7 교보재)
+
+https://www.mongodb.com/cloud/atlas/register
+
+📸 네 장. 클러스터당 한 번뿐이다.
+
+1. `Create` → **M0 (Free)** 선택 (유료 티어와 나란히 보이게)
+2. 지역 `Seoul`
+3. **Database Access** → 사용자 생성 — "비밀번호는 다시 못 본다" 경고까지
+4. **Network Access** → `Add IP Address` → `0.0.0.0/0`
+
+> 비밀번호는 **영문+숫자로만.** `@ : / ? # &` 가 들어가면 URL 인코딩이 필요해서
+> `Authentication failed` 로 시간을 날린다. 참가자 절반이 여기서 막힌다.
+
+📸 `Connect` → `Drivers` → 연결 문자열 (**비밀번호 가리고**)
+
+---
+
+## 2. 구글 OAuth (Day 10 교보재 — 최대 병목)
+
+https://console.cloud.google.com
+
+📸 다섯 장. 여기가 가장 공들여 찍을 구간이다. UI 가 복잡해서 스샷 가이드만 있어도 질문이 확 준다.
+
+1. 프로젝트 생성
+2. `OAuth 동의 화면` — 외부 / 앱 이름 / 이메일
+3. `사용자 인증 정보` → `OAuth 클라이언트 ID` → **웹 애플리케이션**
+4. **승인된 리디렉션 URI** — 지금은 로컬 것만 넣는다
+
+   ```
+   http://localhost:3000/api/auth/callback/google
+   ```
+
+   배포 주소는 4단계에서 주소를 받은 뒤 **추가로** 넣는다
+5. 클라이언트 ID / Secret 발급 (**값 가리기**)
+
+---
+
+## 3. 로컬에서 먼저 띄운다
+
+배포 전에 로컬이 돌아야 한다. 여기서 안 되면 배포해도 안 된다.
+
+```bash
+cd study-web
+npm install
+cp .env.local.example .env.local
+npx auth secret          # AUTH_SECRET 을 만들어 넣는다
+npm run dev
+```
+
+`.env.local` 에 채울 것: `MONGODB_URI`, `AUTH_SECRET`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`
+
+http://localhost:3000 → 구글 로그인 → `/me` 로 들어가면 성공이다.
+
+**관리자 승격**: 로그인 한 번 한 뒤 Atlas → `dulkkot_study` → `users` 에서
+내 문서의 `role` 을 `"admin"` 으로 직접 바꾼다. 화면에 승격 버튼은 일부러 안 만들었다.
+
+그다음 `/submit/1` 에서 인증을 하나 넣어보고 `/admin` 에서 행렬에 뜨는지 본다.
+
+💥 **Day 8 교보재** — 폼을 거치지 않고 콘솔에서 직접 보내본다. 서버 검증이 사는지 확인.
+
+```js
+await fetch('/api/submissions', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ day: 1, fields: { 해부: '', 부숴보기: '' } })
+}).then(r => r.json().then(d => console.log(r.status, d)));
+```
+
+`400` 과 함께 **어느 필드가 왜 잘못됐는지** 가 와야 한다. 이 응답 화면을 찍어둔다.
+
+---
+
+## 4. Vercel 배포 (Day 3 교보재)
+
+https://vercel.com → `Add New` → `Project` → 이 저장소 `Import`
+
+📸 **Import 화면** (프로젝트당 한 번뿐)
+
+> ⚠️ **Root Directory 를 `study-web` 으로 지정한다.** 앱이 하위 폴더에 있기 때문이다.
+> 참가자는 이 단계가 없다("설정 그대로 Deploy"). 교보재로 쓸 땐 이 차이를 말해주거나,
+> 아예 `study-web` 을 별도 repo 로 떼는 게 낫다.
+
+**Environment Variables** 에 `.env.local` 의 값을 **전부** 다시 넣는다. 로컬과 별개다.
+
+| 변수 | 값 |
+|---|---|
+| `MONGODB_URI` | 1번에서 받은 것 |
+| `MONGODB_DB` | `dulkkot_study` |
+| `AUTH_SECRET` | 로컬과 같은 값 |
+| `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | 2번에서 받은 것 |
+| `STUDY_DAY1_DATE` | Day 1 날짜 (`2026-08-03` 형식) |
+
+`Deploy` → 📸 **빌드 로그가 도는 화면**과 **성공 직후 주소가 뜬 화면**
+
+### 배포 직후 반드시 할 것
+
+구글 콘솔로 돌아가 **승인된 리디렉션 URI 에 배포 주소를 추가**한다.
+
+```
+https://<받은주소>.vercel.app/api/auth/callback/google
+```
+
+안 하면 배포에서 로그인이 `redirect_uri_mismatch` 로 막힌다.
+
+💥 **Day 10 교보재** — 추가하기 **전에** 배포 사이트에서 로그인을 시도해 그 에러 화면을 먼저 찍는다.
+최대 병목의 실물이고, 끝 슬래시까지 정확해야 한다는 걸 같이 보여준다.
+
+---
+
+## 5. 배포 후 교보재 몰아 찍기
+
+전부 재현 가능하니 여유 있을 때 한 번에 한다.
+
+💥 **Day 7 — 환경변수 누락** ("로컬은 되는데 배포가 안 돼요" 2위 원인)
+Vercel 에서 `MONGODB_URI` 를 지우고 재배포 → 로컬 정상 화면과 배포 에러 화면을 **나란히**
+
+💥 **Day 7 — IP 차단**
+Atlas Network Access 에서 `0.0.0.0/0` 을 지우고 배포 사이트 접속 → 타임아웃.
+**찍고 반드시 되돌린다**
+
+💥 **Day 3 — 대소문자** (스터디 전체 최대 병목)
+파일명 하나를 대문자로 바꿔 푸시 → 내 컴퓨터는 멀쩡, 배포만 깨짐. 두 화면을 나란히. 찍고 되돌린다
+
+💥 **Day 10 — 권한 우회**
+로그아웃 상태에서 콘솔로 관리자 API 직접 호출
+
+```js
+await fetch('/api/submissions/아무id', {
+  method: 'PATCH',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ action: 'accept' })
+}).then(r => console.log(r.status));
+```
+
+`401` 이 와야 정상이다. `200` 이 오면 뚫린 것이다
+
+📸 **Day 14** — Sources → `Ctrl+Shift+F` 로 `mongodb+srv`, `secret` 검색 → **아무것도 안 나오는 화면**
+📸 **Day 15** — Lighthouse 점수
+
+---
+
+## 6. Cloudinary 는 나중에
+
+스샷 업로드는 코드가 다 있지만 계정 없이도 배포는 된다.
+붙일 때 `.env.local` 과 Vercel **양쪽에** 네 개를 넣는다.
+
+```
+CLOUDINARY_CLOUD_NAME / CLOUDINARY_API_KEY / CLOUDINARY_API_SECRET
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+```
+
+💥 **Day 9 교보재** — `NEXT_PUBLIC_TEST_SECRET=이건비밀이었다` 를 넣고 배포한 뒤
+Sources 에서 검색하면 그대로 나온다. `operator-guide.md` 가 "인상이 가장 강한 실험"으로 꼽은 것이다.
+찍고 그 변수는 지운다.
+
+📸 업로드 시 Network 탭의 **3단계 요청 크기 비교** — 큰 파일이 우리 서버를 안 거치는 게 숫자로 보인다
+
+---
+
+## 막히면
+
+| 증상 | 원인 |
+|---|---|
+| `UntrustedHost` | `auth.js` 의 `trustHost: true` 확인 (이미 넣어뒀다) |
+| `redirect_uri_mismatch` | 구글 콘솔에 배포 주소 미등록. 끝 슬래시까지 정확히 |
+| `Authentication failed` | Atlas **DB 사용자** 비밀번호다. 계정 비밀번호가 아니다 |
+| 배포만 DB 연결 실패 | Vercel 환경변수 누락 / Atlas `0.0.0.0/0` 없음 |
+| 로그인은 되는데 바로 풀림 | `AUTH_SECRET` 이 로컬과 배포가 다름 |
+| `/admin` 이 403 | Atlas 에서 `role` 을 `admin` 으로 안 바꿈 |
