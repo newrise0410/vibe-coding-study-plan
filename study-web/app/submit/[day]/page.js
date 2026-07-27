@@ -4,6 +4,19 @@ import { collections } from '../../../lib/mongodb.js';
 import { fieldsFor, requiredFor } from '../../../lib/dayFields.js';
 import SubmitForm from '../../../components/SubmitForm.js';
 
+/**
+ * 퀘스트 원문은 GitHub 에서 본다. 마크다운이 제대로 렌더되고, 커리큘럼을 고치면
+ * 바로 반영된다. 앱 안에 렌더하는 /quest/[day] 는 나중에.
+ */
+function questUrl(day) {
+  const base =
+    process.env.NEXT_PUBLIC_CURRICULUM_URL ||
+    'https://github.com/newrise0410/vibe-coding-study-plan/blob/master';
+  if (day === 0) return `${base}/curriculum/day-00-setup.md`;
+  const week = day <= 5 ? 1 : day <= 10 ? 2 : 3;
+  return `${base}/curriculum/week-${week}.md`;
+}
+
 export default async function SubmitPage({ params }) {
   const { day: raw } = await params;
   const day = Number(raw);
@@ -20,7 +33,9 @@ export default async function SubmitPage({ params }) {
     <main className="wrap">
       <nav className="crumb">
         <a href="/me">← 내 진행 상황</a>
-        <a href={`/quest/${day}`}>Day {day} 퀘스트 보기</a>
+        <a href={questUrl(day)} target="_blank" rel="noreferrer">
+          Day {day} 퀘스트 보기 ↗
+        </a>
       </nav>
 
       <h1>Day {day} 인증</h1>

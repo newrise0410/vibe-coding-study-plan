@@ -15,6 +15,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     databaseName: process.env.MONGODB_DB || 'dulkkot_study',
   }),
   providers: [Google],
+  // Vercel 에서는 자동 감지되지만, 명시해두지 않으면 다른 호스트에 올렸을 때
+  // UntrustedHost 로 로그인이 통째로 막힌다. 첫 배포에서 헤매기 딱 좋은 지점이다.
+  trustHost: true,
   callbacks: {
     async session({ session, user }) {
       // role 은 Atlas 에서 직접 'admin' 으로 바꾼다. 화면으로 승격시키지 않는다.
