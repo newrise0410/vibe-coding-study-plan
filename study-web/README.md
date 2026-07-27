@@ -23,6 +23,7 @@ rm -rf dulkkot-throwaway
 ```bash
 npm install
 cp .env.local.example .env.local   # 값을 채운다
+node lib/check-env.mjs             # 빠진 값·오타 난 키를 잡는다 (값은 안 찍음)
 npm run dev
 ```
 

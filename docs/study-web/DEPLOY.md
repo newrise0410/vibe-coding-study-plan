@@ -70,11 +70,25 @@ https://console.cloud.google.com
 cd study-web
 npm install
 cp .env.local.example .env.local
-npx auth secret          # AUTH_SECRET 을 만들어 넣는다
-npm run dev
 ```
 
 `.env.local` 에 채울 것: `MONGODB_URI`, `AUTH_SECRET`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`
+
+`AUTH_SECRET` 은 이 명령으로 만든다.
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+```
+
+> **`npx auth secret` 을 쓰지 말 것.** 그 CLI 는 `BETTER_AUTH_SECRET` 이라는 **다른 이름**으로
+> 값을 쓴다. `AUTH_SECRET` 은 빈 채로 남고, 로그인 시도해야 `MissingSecret` 으로 터진다.
+
+채웠으면 띄우기 전에 점검한다. 값은 안 찍고 이름과 길이만 본다.
+
+```bash
+node lib/check-env.mjs
+npm run dev
+```
 
 http://localhost:3000 → 구글 로그인 → `/me` 로 들어가면 성공이다.
 
