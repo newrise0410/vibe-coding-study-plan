@@ -1,8 +1,14 @@
 import { requireAdmin } from '../../auth.js';
 import { collections } from '../../lib/mongodb.js';
 import { buildMatrix, dayStats, CELL } from '../../lib/matrix.js';
-import { parseDate, todayKST } from '../../lib/schedule.js';
+import { parseDate, todayKST, dayToDate } from '../../lib/schedule.js';
 import { inspect } from '../../lib/validate.js';
+
+/** 8/3 -> '8월 3일 (월)' */
+function fmtDate(d) {
+  const W = ['일', '월', '화', '수', '목', '금', '토'];
+  return `${d.getUTCMonth() + 1}월 ${d.getUTCDate()}일 (${W[d.getUTCDay()]})`;
+}
 
 export const dynamic = 'force-dynamic';
 
@@ -40,7 +46,11 @@ export default async function AdminPage() {
     <main className="wrap wide">
       <h1>운영 대시보드</h1>
       <p className="lead">
-        오늘까지 공개된 Day {openDay} · 참가자 {rows.length}명 · 조용한 사람 {quiet.length}명
+        {openDay < 0
+          ? `아직 시작 전 · Day 1은 ${fmtDate(dayToDate(day1, 1))}`
+          : `오늘까지 공개된 Day ${openDay}`}
+        {' · '}참가자 {rows.length}명
+        {openDay >= 1 && ` · 조용한 사람 ${quiet.length}명`}
       </p>
 
       {quiet.length > 0 && (
