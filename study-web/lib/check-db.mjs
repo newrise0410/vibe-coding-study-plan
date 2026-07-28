@@ -77,6 +77,8 @@ try {
     const probe = db.collection('_write_probe');
     const r = await probe.insertOne({ at: new Date() });
     await probe.deleteOne({ _id: r.insertedId });
+    // 컬렉션 자체도 치운다. 안 그러면 Atlas 화면에 계속 남는다.
+    await probe.drop().catch(() => {});
     console.log('쓰기 권한 있음');
   } catch (e) {
     const m = redact(e?.message ?? e);
