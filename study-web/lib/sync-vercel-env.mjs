@@ -129,9 +129,11 @@ for (const p of plan) {
           type: isPublic ? 'plain' : 'encrypted',
           target: TARGET,
         })
-      : await call('PATCH', `/v9/projects/${PROJECT}/env/${p.id}${scope}`, {
+      : // 갱신할 때는 값만 바꾸고 target 은 건드리지 않는다.
+        // Vercel 의 Sensitive 변수는 development 대상을 가질 수 없어서,
+        // 세 대상을 통째로 덮어쓰려 하면 400 이 온다.
+        await call('PATCH', `/v9/projects/${PROJECT}/env/${p.id}${scope}`, {
           value: p.value,
-          target: TARGET,
         });
 
   if (res.ok) {
