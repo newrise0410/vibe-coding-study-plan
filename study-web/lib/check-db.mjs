@@ -70,6 +70,23 @@ try {
   const cols = await db.listCollections().toArray();
   console.log(`컬렉션 ${cols.length}개: ${cols.map((c) => c.name).join(', ') || '(아직 없음)'}`);
 
+  // 읽기만 되는 계정이면 여기서 걸린다.
+  // 로그인할 때 Auth.js 가 users 를 만들어야 하는데, 읽기 전용이면 그 순간 터진다.
+  // 화면에는 그냥 'Server error' 로만 보여서 원인을 찾기 어렵다.
+  try {
+    const probe = db.collection('_write_probe');
+    const r = await probe.insertOne({ at: new Date() });
+    await probe.deleteOne({ _id: r.insertedId });
+    console.log('쓰기 권한 있음');
+  } catch (e) {
+    const m = redact(e?.message ?? e);
+    console.log(`\n!! 쓰기 실패: ${m}`);
+    console.log('  Atlas → Database Access → 그 사용자 → Edit →');
+    console.log("  권한을 'Read and write to any database' 로 바꾸세요.");
+    console.log('  읽기 전용이면 로그인할 때 사용자 문서를 못 만들어서 로그인이 통째로 실패합니다.');
+    process.exit(1);
+  }
+
   const users = await db.collection('users').countDocuments();
   console.log(`users 문서 ${users}개`);
   if (users > 0) {
@@ -84,7 +101,21 @@ try {
   const msg = redact(e?.message ?? e);
   console.log(`\n연결 실패: ${msg}\n`);
 
-  if (/Authentication failed|bad auth/i.test(msg)) {
+  if (/SSL|TLS|alert number 80|ssl3_read_bytes/i.test(msg)) {
+    // Atlas 는 허용되지 않은 IP 를 TLS 핸드셰이크 단계에서 끊는다.
+    // 접속 문자열이나 비밀번호 문제가 아니다.
+    console.log('Atlas 가 TLS 단계에서 연결을 끊었습니다. 거의 항상 IP 문제입니다.');
+    console.log('');
+    console.log('  Atlas → Network Access 를 열고 확인하세요:');
+    console.log('    1. 0.0.0.0/0 항목이 있나');
+    console.log("    2. 상태가 Active 인가 (Pending 이면 1~2분 기다린다)");
+    console.log('    3. 만료 시간이 걸려 있지 않나');
+    console.log('       — "temporary access" 로 추가하면 6시간 뒤 자동으로 사라진다');
+    console.log('    4. 내 IP 만 넣어뒀다면, IP 가 바뀌었을 수 있다');
+    console.log('');
+    console.log('  Day 7 부숴보기 실험으로 0.0.0.0/0 을 지웠다면 되돌리세요.');
+    console.log('  클러스터가 Paused 상태인지도 함께 확인합니다.');
+  } else if (/Authentication failed|bad auth/i.test(msg)) {
     console.log('아이디 또는 비밀번호가 틀립니다.');
     console.log('  Atlas 계정 비밀번호가 아니라 **Database Access 의 DB 사용자** 비밀번호입니다.');
   } else if (/ENOTFOUND|querySrv|getaddrinfo/i.test(msg)) {

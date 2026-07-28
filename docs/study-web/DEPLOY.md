@@ -210,6 +210,7 @@ Sources 에서 검색하면 그대로 나온다. `operator-guide.md` 가 "인상
 | `redirect_uri_mismatch` | 구글 콘솔에 배포 주소 미등록. 끝 슬래시까지 정확히 |
 | `Authentication failed` | Atlas **DB 사용자** 비밀번호다. 계정 비밀번호가 아니다 |
 | 배포만 DB 연결 실패 | Vercel 환경변수 누락 / Atlas `0.0.0.0/0` 없음 |
+| `SSL alert number 80` / TLS 에러 | **Atlas 가 IP 를 막은 것이다.** 접속 문자열·비밀번호 문제가 아니다. Network Access 에 `0.0.0.0/0` 이 Active 인지 본다. 임시 접근으로 넣으면 6시간 뒤 사라진다 |
 | 로그인은 되는데 바로 풀림 | `AUTH_SECRET` 이 로컬과 배포가 다름 |
 | `/admin` 이 403 | Atlas 에서 `role` 을 `admin` 으로 안 바꿈 |
 | `MissingSecret` | `AUTH_SECRET` 이 비었다. `npx auth secret` 은 쓰지 말 것 (위 3번 참조) |
