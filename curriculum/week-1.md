@@ -44,7 +44,8 @@ script.js    동작   무슨 일이 일어나면 무엇이 바뀌는가      →
 
 ## 2. 시켜보기
 
-Cursor에서 `dulkkot-store` 폴더를 열고 AI 채팅(`Ctrl+L` / `Cmd+L`)에:
+Orca에서 `dulkkot-store` 워크트리를 열고, 터미널 위 **에이전트 콤보박스**에서 내 에이전트를 고른다.
+그 터미널에 이렇게 넣는다:
 
 ```
 동네 카페 '들꽃'의 원두 판매 사이트 첫 화면을 만들어줘.
@@ -61,6 +62,13 @@ Cursor에서 `dulkkot-store` 폴더를 열고 AI 채팅(`Ctrl+L` / `Cmd+L`)에:
 브라우저로 `index.html`을 열어 확인한다.
 
 ## 3. 해부하기 🔍
+
+먼저 **Orca의 diff 뷰어**를 연다. 에이전트가 방금 만든 파일들이 전부 변경으로 잡혀 있다.
+
+> 🖼 `day01-orca-diff.png` — diff 뷰어. 거터의 AI 마커로 에이전트가 쓴 줄이 표시된 화면
+
+거터에 **AI가 쓴 줄을 표시하는 마커**가 보인다. 오늘은 전부 AI가 썼으니 온통 마커지만,
+앞으로 내가 손대기 시작하면 **누가 뭘 썼는지**가 갈린다. 이게 이 스터디의 관찰 도구다.
 
 파일에서 **아래 4개를 직접 찾아 줄 번호를 적는다.**
 
@@ -233,6 +241,8 @@ body
 상품 제목을 검사하면 걸린 CSS 규칙이 **전부** 뜬다.
 **진 규칙은 취소선(~~strikethrough~~)이 그어져 있다.** 맨 위가 승자다.
 
+> 🖼 `day02-styles-strikethrough.png` — 상품 제목을 검사해 규칙 세 개가 뜨고, 진 규칙에 취소선이 그어진 Styles 패널
+
 > **이 화면이 CSS 디버깅의 90%다.** "내 CSS가 안 먹혀요"는 여기서 대부분 3초에 끝난다.
 
 **③ 박스를 확인한다**
@@ -376,11 +386,18 @@ Flexbox 또는 Grid를 쓰고, 어떤 속성이 무슨 역할인지 주석으로
 
 **C. Git + 배포**
 
-1. Cursor 좌측 **Source Control**(가지 모양) → `Initialize Repository`
-2. 메시지 `Day 3: 상품 목록 반응형` → `Commit`
-3. `Publish Branch` → 이름 `dulkkot-store`, **Public**
+1. Orca 우측 **Source Control** 패널을 연다 (Day 0에서 `git init`은 이미 했다)
+2. 바뀐 파일을 **스테이지**하고, 메시지 `Day 3: 상품 목록 반응형` → `Commit`
+3. GitHub에 빈 저장소 `dulkkot-store`를 **Public**으로 만들고, 주소를 원격으로 추가한 뒤 `Push`
+   ```bash
+   git remote add origin https://github.com/내아이디/dulkkot-store.git
+   git branch -M main
+   ```
 4. https://vercel.com → `Add New` → `Project` → 저장소 `Import` → **설정 그대로** `Deploy`
 5. 1분 뒤 주소가 나온다. **핸드폰으로 열어본다**
+
+> 🖼 `day03-vercel-import.png` — Import 화면 (설정을 건드리지 않는다는 게 보이게)
+> 🖼 `day03-deploy-done.png` — 배포 성공 직후 주소가 뜬 화면
 
 ## 3. 해부하기 🔍
 
@@ -397,7 +414,8 @@ Styles에서 `justify-content` 값을 바꿔가며 결과를 직접 적는다: `
 - **Status** 열: `200` 정상 / `404` 못 찾음
 - 맨 아래 `requests`, `transferred`, `Finish` 숫자를 적는다
 
-**④ 되돌리기를 실제로 해본다** — `style.css` 배경색을 형광색으로 바꾸고 저장 → Source Control에서 **되돌리기(↩)** → 원상복구.
+**④ 되돌리기를 실제로 해본다** — `style.css` 배경색을 형광색으로 바꾼다 (Orca는 자동 저장이다)
+→ Source Control 패널에서 그 파일 우클릭 → **discard** → 원상복구.
 
 **⑤ 자동 배포 확인** — 뭐든 고치고 커밋 → 푸시 → 1분 뒤 배포 주소 새로고침. **바뀌어 있다.** 앞으로 배포를 따로 할 일은 없다.
 
@@ -420,6 +438,8 @@ Styles에서 `justify-content` 값을 바꿔가며 결과를 직접 적는다: `
 ```
 
 **"로컬에선 되는데 배포하면 안 돼요"의 1위 원인.** 여기서 한 번 겪어두면 평생 안 헤맨다. 확인 후 되돌린다.
+
+> 🖼 `day03-case-sensitivity.png` — 같은 페이지를 내 컴퓨터와 배포 사이트에서 나란히 연 화면 (한쪽만 깨져 있다)
 
 **D**: `column`으로 바꾸면 **주축이 세로가 된다.** `justify-content`가 세로 정렬을 하게 된다.
 그건 "가로 정렬"이 아니라 **"주축 정렬"** 이었다.
@@ -607,7 +627,7 @@ app/api/products/route.js →  /api/products  ← 여기가 서버다
 
 ## 2. 시켜보기
 
-**A. 프로젝트 생성** — Cursor 터미널(`` Ctrl+` ``)에서 **이 줄을 그대로** 붙여넣는다.
+**A. 프로젝트 생성** — Orca 터미널(`Cmd/Ctrl+T`로 새 탭)에서 **이 줄을 그대로** 붙여넣는다.
 
 ```bash
 npx create-next-app@latest dulkkot-next --js --eslint --no-tailwind --no-src-dir --app --no-import-alias --no-react-compiler --no-agents-md
@@ -626,6 +646,8 @@ npx create-next-app@latest dulkkot-next --js --eslint --no-tailwind --no-src-dir
 
 > **Turbopack은 이제 기본값이라 따로 안 고른다.** 묻는 항목은 버전마다 바뀌니
 > 외울 필요 없다. 위 한 줄만 쓰면 된다.
+
+> 🖼 `day05-create-next-app.png` — 첫 질문 `Would you like to use the recommended Next.js defaults?` 의 선택지 세 개가 다 보이는 화면
 
 ### 제대로 만들어졌는지 확인
 

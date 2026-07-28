@@ -226,6 +226,8 @@ DB 연결은 비싸다. 요청마다 새로 연결하면 금방 한도를 넘긴
 
 **A. 연결 문자열 준비**
 
+> 🖼 `day07-atlas-connect.png` — `Connect → Drivers` 의 연결 문자열 화면 (**비밀번호는 가리고**)
+
 1. Atlas → 클러스터 → `Connect` → `Drivers` → 문자열 복사
 2. `<password>` 부분을 실제 비밀번호로 교체
 3. 프로젝트 루트에 `.env.local` 생성:
@@ -588,6 +590,8 @@ Cloudinary 이미지 업로드를 붙여줘.
 
 **2번의 크기와 1·3번의 크기를 비교한다.** 큰 파일이 우리 서버를 안 거친다는 게 숫자로 보인다.
 
+> 🖼 `day09-upload-network.png` — Network 탭에 요청 셋이 나란히 뜨고 **Size 열의 차이**가 보이는 화면
+
 **② DB에 뭐가 들어갔는지 본다**
 
 Atlas에서 방금 만든 상품 문서를 연다. 이미지가 아니라 **URL 문자열**이 들어있다.
@@ -718,6 +722,9 @@ HTTP에는 근본적인 특징이 있다. **요청은 서로를 모른다.**
 2. `API 및 서비스` → `OAuth 동의 화면` 설정 (외부, 앱 이름, 이메일)
 3. `사용자 인증 정보` → `OAuth 클라이언트 ID` → 웹 애플리케이션
 4. 승인된 리디렉션 URI에 **둘 다** 등록:
+
+   > 🖼 `day10-redirect-uri.png` — 구글 콘솔에 localhost와 배포 주소가 **둘 다** 들어간 화면
+
    ```
    http://localhost:3000/api/auth/callback/google
    https://내주소.vercel.app/api/auth/callback/google

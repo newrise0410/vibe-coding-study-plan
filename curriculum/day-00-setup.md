@@ -1,6 +1,6 @@
 # Day 0 — 준비 (시작 3일 전)
 
-이번 스터디는 외부 서비스를 5개 쓴다. **계정 만들기에서 첫날을 날리지 않는 것**이 목표다.
+이번 스터디는 도구 둘과 외부 서비스 다섯을 쓴다. **설치와 계정 만들기에서 첫날을 날리지 않는 것**이 목표다.
 
 가입만 미리 해두고 각 서비스가 무슨 역할인지 한 줄씩만 알아둔다. 설정은 해당 Day에 한다.
 
@@ -33,22 +33,47 @@
 
 **순서대로** 한다. 뒤로 갈수록 앞의 계정이 필요하다.
 
-### ① Cursor 설치 — https://cursor.com
+### ① Orca 설치 — https://www.onorca.dev/download
 
-- "VS Code 설정 가져오기"는 Skip
-- 단축키는 기본값 그대로
+이메일을 넣으면 다운로드 링크가 온다. macOS · Windows · Linux 전부 있다.
 
-### ② GitHub — https://github.com/signup
+> 🖼 `day00-orca-download.png` — 다운로드 페이지에서 내 OS 빌드를 고르는 화면
+
+- 첫 실행 시 **홈 디렉토리 접근 권한**을 물어본다. 허용한다 (저장소를 추가하려면 필요하다)
+- Windows면 `Settings → Terminal`에서 기본 셸을 **PowerShell**로 둔다
+- 빈 화면에 `Add Repo` 버튼만 보이면 정상이다. 저장소는 ⑧에서 만든다
+
+**Orca는 AI를 주지 않는다.** 에이전트는 ②에서 각자 고른다.
+
+### ② AI 에이전트 하나 고르기
+
+Orca는 에이전트를 **실행해주는** 도구다. 실제로 코드를 쓰는 건 그 안에서 도는 에이전트다.
+쓰던 게 있으면 그걸 쓰고, 없으면 무료로 시작할 수 있는 걸 고른다.
+
+| 에이전트 | 비용 | 설치 |
+|---|---|---|
+| **Gemini CLI** | 무료 티어 있음 | `npm i -g @google/gemini-cli` 후 한 번 로그인 |
+| **Claude Code** | Claude 구독 필요 | `npm i -g @anthropic-ai/claude-code` 후 `claude` |
+| **Codex** | ChatGPT 구독 필요 | OpenAI 문서대로 설치 후 `codex` |
+| **Cursor CLI** | Cursor 구독 필요 | 이미 쓰고 있다면 그대로 |
+
+**터미널에서 한 번 로그인해두면** Orca가 알아서 찾는다. 별도 설정이 없다.
+
+> 어느 걸 골라도 이 스터디는 굴러간다. 커리큘럼은 특정 에이전트에 기대지 않는다.
+> 다만 **결과물의 품질은 에이전트마다 다르다.** 잘 안 나오면 다른 걸 붙여봐도 된다 —
+> 그게 Orca를 쓰는 이유이기도 하다.
+
+### ③ GitHub — https://github.com/signup
 
 - 코드 원본 보관소
 - 아이디는 나중에 주소에 쓰일 수 있으니 부끄럽지 않은 걸로
 
-### ③ Vercel — https://vercel.com
+### ④ Vercel — https://vercel.com
 
 - **반드시 "Continue with GitHub"로 가입한다.** 이메일로 따로 가입하면 배포 연동이 꼬인다
 - 여기서 제일 많이 실수한다
 
-### ④ MongoDB Atlas — https://www.mongodb.com/cloud/atlas/register
+### ⑤ MongoDB Atlas — https://www.mongodb.com/cloud/atlas/register
 
 - 가입 → `Create` → **M0 (Free)** 선택 → 지역은 `Seoul` 또는 가까운 곳
 - 클러스터 이름은 기본값
@@ -56,12 +81,12 @@
 - **Network Access**에서 `Add IP Address` → **`0.0.0.0/0` (Allow from anywhere)**
   - 왜 이렇게 하는지는 Day 7에서 다룬다. 지금은 이대로 둔다
 
-### ⑤ Cloudinary — https://cloudinary.com/users/register_free
+### ⑥ Cloudinary — https://cloudinary.com/users/register_free
 
 - 가입 후 Dashboard에서 `Cloud name`, `API Key`, `API Secret` 위치만 확인해둔다
 - **아직 아무 데도 복사해두지 않는다.** 키를 다루는 법은 Day 9에서 배운다
 
-### ⑥ 포트원 — https://admin.portone.io
+### ⑦ 포트원 — https://admin.portone.io
 
 - 가입 → 상점 생성
 - 결제 연동 → **테스트 채널 추가 → PG사 `KG이니시스` 선택**
@@ -70,15 +95,40 @@
 > 사업자등록증이 없어도 **테스트 채널은 만들 수 있다.** 실거래만 계약이 필요하다.
 > 만약 테스트 채널 생성에서 막히면 `#질문`에 올린다. 콘솔 화면이 종종 바뀐다.
 
-### ⑦ 작업 폴더와 첫 파일
+### ⑧ 작업 폴더와 첫 파일
 
-- 바탕화면에 `dulkkot-store` 폴더 생성 (**한글·공백 없이**)
-- Cursor에서 `File > Open Folder`
-- 우클릭 → `New File` → `index.html`, 내용은 한 줄만:
+**1. 폴더를 만들고 git 저장소로 만든다.** 터미널에서:
+
+```bash
+mkdir dulkkot-store
+cd dulkkot-store
+git init
+```
+
+> `git init`이 뭔지는 **Day 3에서 배운다.** 지금은 Orca가 폴더를 인식하게 하는 절차라고만 알아두면 된다.
+> Orca는 git 저장소 단위로 움직이기 때문에 이 한 줄이 필요하다.
+
+**2. Orca에 저장소를 추가한다.**
+
+- 사이드바 `Add Repo` → 방금 만든 `dulkkot-store` 폴더 선택
+- 저장소 이름 옆 `+` 를 눌러 **워크트리**를 만든다. 이름은 `day1` 정도
+- 워크트리가 열리면 터미널이 뜨고, 위쪽에 **에이전트 콤보박스**가 보인다
+
+> 🖼 `day00-orca-addrepo.png` — 저장소가 추가되고 워크트리 하나가 열린 사이드바
+
+**3. 첫 파일을 만든다.**
+
+- 좌측 파일 탐색기에서 우클릭 → `New File` → `index.html`
+- 내용은 한 줄만:
   ```html
   <h1>안녕 나는 여기 있다</h1>
   ```
-- 저장 후 브라우저로 열어 확인
+- Orca는 **자동 저장**이다. `Ctrl+S`를 안 눌러도 된다
+- 브라우저로 열어 확인
+
+> **워크트리가 뭔가.** 작업 하나에 폴더 하나를 통째로 주는 방식이다.
+> 망가뜨려도 그 워크트리만 버리면 끝이라, 이 스터디의 **부숴보기**와 궁합이 좋다.
+> 자세한 건 Day 3에서 git과 함께 다룬다.
 
 ---
 
@@ -130,6 +180,7 @@ CSS를 한 줄도 안 썼는데 제목이 크게 나오는 이유가 이것이�
 
 ```
 [Day 0] 완료
+■ 도구: Orca 설치됨? 고른 에이전트는? (Gemini / Claude / Codex / Cursor / 기타)
 ■ 계정: GitHub / Vercel / Atlas / Cloudinary / 포트원 — 다 됨? 막힌 곳?
 ■ 스샷: 브라우저에 '안녕 나는 여기 있다'가 뜬 화면 (주소창 보이게)
 ■ 부숴보기: A 또는 B 결과
@@ -150,6 +201,9 @@ CSS를 한 줄도 안 썼는데 제목이 크게 나오는 이유가 이것이�
 | 브라우저에 코드 글자가 그대로 보임 | 파일명이 `index.html.txt`다. 확장자 표시를 켜고 확인 |
 | Atlas 비밀번호를 잃어버림 | Database Access에서 비밀번호 재설정. 특수문자 `@ : / ?`는 피할 것 (Day 7에 이유가 나온다) |
 | 포트원 테스트 채널이 안 만들어짐 | 콘솔 화면이 바뀌었을 수 있다. 스샷과 함께 `#질문` |
+| Orca에서 `Add Repo`가 폴더를 안 받음 | `git init`을 안 했다. 폴더 안에서 `git init` 실행 |
+| 에이전트 콤보박스에 내 에이전트가 없음 | 터미널에서 한 번 로그인해야 Orca가 찾는다. 로그인 후 Orca 재시작 |
+| 에이전트가 시작하다 멈춤 | `Settings → Agents`에서 그 에이전트가 감지됐는지 확인 |
 
 ---
 
