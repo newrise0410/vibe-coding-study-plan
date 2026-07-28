@@ -105,9 +105,12 @@ Console → Network → Application → Sources 순으로 쓸 일이 늘어나�
 - viewport 실험은 **실제 핸드폰**이 필요하다는 점 강조
 
 ### Day 5 — 첫 고비
-- `create-next-app` 선택지에서 헤맴 → 선택값을 `#공지`에 스샷으로 박아둘 것
-- **첫 질문 "recommended defaults?" 에서 `Yes` 를 누르면 TypeScript·Tailwind 가 딸려 들어온다.**
-  이러면 커리큘럼 나머지가 안 맞아서 폴더를 지우고 다시 만들어야 한다. Day 5 아침에 크게 공지할 것
+- **`create-next-app` 은 플래그 한 줄로 넘기게 했다.** 질문이 아홉 개라 하나만 틀려도 꼬인다.
+  Day 5 아침에 그 명령어를 `#공지`에 **복사 가능한 형태로** 박아둘 것
+- 직접 고르는 사람이 있다면 첫 질문이 함정이다. `Yes, use recommended defaults` 를 누르면
+  TypeScript·Tailwind 가 딸려 들어와 폴더를 지우고 다시 만들어야 한다.
+  세 번째 `No, customize settings` 를 골라야 한다
+- 확인법을 같이 공지: **`tsconfig.json` 이나 `tailwind.config.*` 가 있으면 잘못 만든 것**
 - **`'use client'` 개념이 처음 어려운 지점.** 여기 이해가 안 되면 2주차 전체가 흔들린다
 - 서버 `console.log`가 터미널에 찍히는 실험은 **반드시** 하게 할 것. 인증에서 스샷 확인
 

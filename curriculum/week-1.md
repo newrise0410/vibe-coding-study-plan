@@ -613,27 +613,56 @@ app/api/products/route.js →  /api/products  ← 여기가 서버다
 npx create-next-app@latest dulkkot-next
 ```
 
-**첫 질문이 함정이다.**
+그냥 실행하면 **질문이 아홉 개쯤 쏟아진다.** 하나만 잘못 골라도 이 스터디의 나머지가
+안 맞게 되니, 답을 미리 정해서 한 줄로 넘긴다.
+
+```bash
+npx create-next-app@latest dulkkot-next \
+  --js --eslint --no-tailwind --no-src-dir --app \
+  --no-import-alias --no-react-compiler --no-agents-md
+```
+
+이러면 질문 없이 바로 만들어진다. 각 플래그의 뜻:
+
+| 플래그 | 뜻 | 왜 |
+|---|---|---|
+| `--js` | TypeScript 대신 JavaScript | 지금은 배울 게 하나라도 적은 편이 낫다 |
+| `--no-tailwind` | Tailwind 안 씀 | CSS를 직접 다루는 감각을 유지하려고 |
+| `--eslint` | ESLint 씀 | 실수를 미리 잡아준다 |
+| `--no-src-dir` | `src/` 폴더 안 만듦 | 폴더가 한 겹 줄어 경로가 단순해진다 |
+| `--app` | App Router | 폴더 구조가 곧 주소가 되는 방식 |
+
+> **Turbopack은 이제 기본값이라 따로 안 고른다.**
+
+### 직접 골라보고 싶다면
+
+플래그 없이 실행하면 이렇게 묻는다. **첫 질문이 함정이다.**
 
 ```
 Would you like to use the recommended Next.js defaults?
+  Yes, use recommended defaults - TypeScript, ESLint, Tailwind CSS, App Router, AGENTS.md
+  No, reuse previous settings
+  No, customize settings          ← 이걸 고른다
 ```
 
-여기서 **반드시 `No`를 고른다.** `Yes`를 누르면 TypeScript와 Tailwind가 딸려 들어와서
-이 스터디의 나머지가 전부 안 맞게 된다. 되돌리려면 폴더를 지우고 다시 만들어야 한다.
+`Yes`를 누르면 TypeScript와 Tailwind가 딸려 들어온다. 세 번째 **`No, customize settings`** 를 골라야
+하나씩 물어본다.
 
-`No`를 고르면 하나씩 물어본다. 이렇게 답한다.
+```
+Would you like to use TypeScript?            No
+Which linter would you like to use?          ESLint
+Would you like to use React Compiler?        No
+Would you like to use Tailwind CSS?          No
+Would you like your code inside a `src/`?    No
+Would you like to use App Router?            Yes
+Would you like to customize the import alias? No
+Would you like to include AGENTS.md?         No
+```
 
-TypeScript **No** / ESLint **Yes** / Tailwind **No** / `src/` **No** / App Router **Yes** / Turbopack **Yes** / import alias **No**
+### 제대로 만들어졌는지 확인
 
-> 버전에 따라 묻는 항목이 조금씩 다르다. 없는 항목은 넘어가면 되고,
-> **TypeScript와 Tailwind를 `No`로 하는 것**만 지키면 된다.
-
-> Tailwind를 No로 하는 건 CSS를 직접 다루는 감각을 유지하기 위해서다. 익숙해지면 나중에 붙이면 된다.
-> TypeScript도 마찬가지다. 지금은 배울 게 하나라도 적은 편이 낫다.
-
-만들어진 폴더에 `tailwind.config.*` 나 `tsconfig.json` 이 있으면 잘못 고른 것이다.
-폴더를 지우고 다시 만든다.
+만들어진 폴더에 **`tsconfig.json`이나 `tailwind.config.*`가 있으면 잘못 고른 것이다.**
+폴더를 지우고 다시 만든다. `jsconfig.json`과 `app/page.js`가 있으면 맞다.
 
 ```bash
 cd dulkkot-next
