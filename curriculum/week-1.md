@@ -607,22 +607,14 @@ app/api/products/route.js →  /api/products  ← 여기가 서버다
 
 ## 2. 시켜보기
 
-**A. 프로젝트 생성** — Cursor 터미널(`` Ctrl+` ``)에서:
+**A. 프로젝트 생성** — Cursor 터미널(`` Ctrl+` ``)에서 **이 줄을 그대로** 붙여넣는다.
 
 ```bash
-npx create-next-app@latest dulkkot-next
+npx create-next-app@latest dulkkot-next --js --eslint --no-tailwind --no-src-dir --app --no-import-alias --no-react-compiler --no-agents-md
 ```
 
-그냥 실행하면 **질문이 아홉 개쯤 쏟아진다.** 하나만 잘못 골라도 이 스터디의 나머지가
-안 맞게 되니, 답을 미리 정해서 한 줄로 넘긴다.
-
-```bash
-npx create-next-app@latest dulkkot-next \
-  --js --eslint --no-tailwind --no-src-dir --app \
-  --no-import-alias --no-react-compiler --no-agents-md
-```
-
-이러면 질문 없이 바로 만들어진다. 각 플래그의 뜻:
+플래그 없이 실행하면 질문이 아홉 개쯤 쏟아지고, 하나만 잘못 골라도 이 스터디의 나머지가
+안 맞게 된다. 그래서 답을 미리 정해뒀다. 각 플래그의 뜻:
 
 | 플래그 | 뜻 | 왜 |
 |---|---|---|
@@ -632,32 +624,8 @@ npx create-next-app@latest dulkkot-next \
 | `--no-src-dir` | `src/` 폴더 안 만듦 | 폴더가 한 겹 줄어 경로가 단순해진다 |
 | `--app` | App Router | 폴더 구조가 곧 주소가 되는 방식 |
 
-> **Turbopack은 이제 기본값이라 따로 안 고른다.**
-
-### 직접 골라보고 싶다면
-
-플래그 없이 실행하면 이렇게 묻는다. **첫 질문이 함정이다.**
-
-```
-Would you like to use the recommended Next.js defaults?
-  Yes, use recommended defaults - TypeScript, ESLint, Tailwind CSS, App Router, AGENTS.md
-  No, reuse previous settings
-  No, customize settings          ← 이걸 고른다
-```
-
-`Yes`를 누르면 TypeScript와 Tailwind가 딸려 들어온다. 세 번째 **`No, customize settings`** 를 골라야
-하나씩 물어본다.
-
-```
-Would you like to use TypeScript?            No
-Which linter would you like to use?          ESLint
-Would you like to use React Compiler?        No
-Would you like to use Tailwind CSS?          No
-Would you like your code inside a `src/`?    No
-Would you like to use App Router?            Yes
-Would you like to customize the import alias? No
-Would you like to include AGENTS.md?         No
-```
+> **Turbopack은 이제 기본값이라 따로 안 고른다.** 묻는 항목은 버전마다 바뀌니
+> 외울 필요 없다. 위 한 줄만 쓰면 된다.
 
 ### 제대로 만들어졌는지 확인
 
