@@ -12,7 +12,7 @@ const WEEK = { 1: '1주차 · 브라우저', 6: '2주차 · 서버와 데이터'
 
 export default async function QuestIndex() {
   const session = await auth();
-  if (!session?.user) redirect('/');
+  if (!session?.user) redirect('/login');
 
   const [days, { submissions }] = await Promise.all([dayHeadings(), collections()]);
   const mine = await submissions

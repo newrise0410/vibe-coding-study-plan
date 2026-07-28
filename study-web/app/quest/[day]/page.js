@@ -16,7 +16,7 @@ export default async function QuestPage({ params }) {
   if (!Number.isInteger(day) || day < 0 || day > 15) notFound();
 
   const session = await auth();
-  if (!session?.user) redirect('/');
+  if (!session?.user) redirect('/login');
 
   const section = await daySection(day);
   if (!section) notFound();

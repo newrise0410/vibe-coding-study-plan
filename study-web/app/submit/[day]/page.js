@@ -11,7 +11,7 @@ export default async function SubmitPage({ params }) {
   if (!fields.length) notFound();
 
   const session = await auth();
-  if (!session?.user) redirect('/');
+  if (!session?.user) redirect('/login');
 
   const { submissions } = await collections();
   const initial = await submissions.findOne({ userId: session.user.id, day });

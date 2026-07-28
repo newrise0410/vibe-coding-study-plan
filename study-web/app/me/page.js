@@ -14,7 +14,7 @@ const BADGES = [
 
 export default async function MePage() {
   const session = await auth();
-  if (!session?.user) redirect('/');
+  if (!session?.user) redirect('/login');
 
   const { submissions } = await collections();
   const mine = await submissions
