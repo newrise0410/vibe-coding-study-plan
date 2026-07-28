@@ -187,12 +187,27 @@ await fetch('/api/submissions/아무id', {
 ## 6. Cloudinary 는 나중에
 
 스샷 업로드는 코드가 다 있지만 계정 없이도 배포는 된다.
-붙일 때 `.env.local` 과 Vercel **양쪽에** 네 개를 넣는다.
+
+**계정 생성은 웹으로만 된다.** Cloudinary 계정을 만드는 API 는 없다.
+https://cloudinary.com 에서 가입하고 Dashboard 상단의 세 값을 복사한다.
+
+📸 세 값의 **위치**에 화살표를 표시한 스샷 (값은 가린다)
+
+`.env.local` 과 Vercel **양쪽에** 네 개를 넣는다.
 
 ```
 CLOUDINARY_CLOUD_NAME / CLOUDINARY_API_KEY / CLOUDINARY_API_SECRET
-NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME     ← CLOUDINARY_CLOUD_NAME 과 같은 값
 ```
+
+채웠으면 확인한다. 자격증명뿐 아니라 **서명 업로드를 실제로 한 번 해보고 지운다.**
+
+```bash
+node lib/check-cloudinary.mjs
+```
+
+가입 이후는 CLI 로도 된다 (`pip install cloudinary-cli` → `cld ping`). 다만 앱은
+서명 업로드를 직접 구현해뒀으므로 CLI 가 필요하지 않다.
 
 💥 **Day 9 교보재** — `NEXT_PUBLIC_TEST_SECRET=이건비밀이었다` 를 넣고 배포한 뒤
 Sources 에서 검색하면 그대로 나온다. `operator-guide.md` 가 "인상이 가장 강한 실험"으로 꼽은 것이다.
