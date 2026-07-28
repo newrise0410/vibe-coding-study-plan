@@ -127,6 +127,16 @@ https://vercel.com → `Add New` → `Project` → 이 저장소 `Import`
 
 **Environment Variables** 에 `.env.local` 의 값을 **전부** 다시 넣는다. 로컬과 별개다.
 
+> 손으로 옮기다 복사 실수가 나기 쉽다. 스크립트로 밀어 올릴 수도 있다.
+>
+> ```bash
+> # 토큰은 https://vercel.com/account/tokens 에서 발급 (웹, 1분)
+> VERCEL_TOKEN=xxx node lib/sync-vercel-env.mjs           # 미리보기
+> VERCEL_TOKEN=xxx node lib/sync-vercel-env.mjs --apply   # 반영
+> ```
+>
+> `AUTH_URL` 은 일부러 제외한다. 로컬 주소라 배포에 올리면 오히려 로그인이 깨진다.
+
 | 변수 | 값 |
 |---|---|
 | `MONGODB_URI` | 1번에서 받은 것 |
