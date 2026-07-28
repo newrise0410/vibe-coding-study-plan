@@ -613,9 +613,27 @@ app/api/products/route.js →  /api/products  ← 여기가 서버다
 npx create-next-app@latest dulkkot-next
 ```
 
-선택지는 이렇게: TypeScript **No** / ESLint **Yes** / Tailwind **No** / `src/` **No** / App Router **Yes** / Turbopack **Yes** / import alias **No**
+**첫 질문이 함정이다.**
+
+```
+Would you like to use the recommended Next.js defaults?
+```
+
+여기서 **반드시 `No`를 고른다.** `Yes`를 누르면 TypeScript와 Tailwind가 딸려 들어와서
+이 스터디의 나머지가 전부 안 맞게 된다. 되돌리려면 폴더를 지우고 다시 만들어야 한다.
+
+`No`를 고르면 하나씩 물어본다. 이렇게 답한다.
+
+TypeScript **No** / ESLint **Yes** / Tailwind **No** / `src/` **No** / App Router **Yes** / Turbopack **Yes** / import alias **No**
+
+> 버전에 따라 묻는 항목이 조금씩 다르다. 없는 항목은 넘어가면 되고,
+> **TypeScript와 Tailwind를 `No`로 하는 것**만 지키면 된다.
 
 > Tailwind를 No로 하는 건 CSS를 직접 다루는 감각을 유지하기 위해서다. 익숙해지면 나중에 붙이면 된다.
+> TypeScript도 마찬가지다. 지금은 배울 게 하나라도 적은 편이 낫다.
+
+만들어진 폴더에 `tailwind.config.*` 나 `tsconfig.json` 이 있으면 잘못 고른 것이다.
+폴더를 지우고 다시 만든다.
 
 ```bash
 cd dulkkot-next
