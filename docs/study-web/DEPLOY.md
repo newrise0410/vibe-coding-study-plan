@@ -86,9 +86,13 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 채웠으면 띄우기 전에 점검한다. 값은 안 찍고 이름과 길이만 본다.
 
 ```bash
-node lib/check-env.mjs
+node lib/check-env.mjs   # 빠진 값·오타 난 키
+node lib/check-db.mjs    # Atlas 연결
 npm run dev
 ```
+
+> **`.env.local` 을 고쳤으면 개발 서버를 껐다 켠다.** 자동 반영이 안 될 때가 있고,
+> 그러면 값은 맞는데 에러가 계속 나서 원인을 엉뚱한 데서 찾게 된다.
 
 http://localhost:3000 → 구글 로그인 → `/me` 로 들어가면 성공이다.
 
@@ -208,3 +212,16 @@ Sources 에서 검색하면 그대로 나온다. `operator-guide.md` 가 "인상
 | 배포만 DB 연결 실패 | Vercel 환경변수 누락 / Atlas `0.0.0.0/0` 없음 |
 | 로그인은 되는데 바로 풀림 | `AUTH_SECRET` 이 로컬과 배포가 다름 |
 | `/admin` 이 403 | Atlas 에서 `role` 을 `admin` 으로 안 바꿈 |
+| `MissingSecret` | `AUTH_SECRET` 이 비었다. `npx auth secret` 은 쓰지 말 것 (위 3번 참조) |
+| `Server error / problem with the server configuration` | Auth.js 가 설정 실패를 뭉뚱그린 화면이다. **진짜 원인은 터미널에** 있다. `check-env` → `check-db` 순으로 보고, 값이 맞는데도 나면 **개발 서버를 껐다 켠다** |
+
+### 설정이 진짜 유효한지 확인하는 법
+
+브라우저 없이 확인된다. 서버를 띄운 뒤:
+
+```bash
+curl -s http://localhost:3000/api/auth/providers   # google 이 나와야 한다
+curl -s http://localhost:3000/api/auth/csrf        # csrfToken 이 나와야 한다
+```
+
+둘 다 정상이면 `AUTH_SECRET` 과 구글 자격증명이 제대로 읽히고 있는 것이다.
