@@ -30,7 +30,7 @@ export default async function MePage() {
     <main className="wrap">
       <h1>{session.user.name}님의 진행 상황</h1>
       <p className="lead">
-        {mine.length} / 16일 완료
+        {mine.length} / 16일 완료 · <a href="/quest">15일 지도</a>
         {session.user.role === 'admin' && <> · <a href="/admin">운영 대시보드</a></>}
       </p>
 
@@ -72,7 +72,7 @@ export default async function MePage() {
             const open = d <= openDay;
             return (
               <li key={d}>
-                Day {d} —{' '}
+                <a href={`/quest/${d}`}>Day {d}</a> —{' '}
                 {s ? (
                   <>
                     <a href={`/submit/${d}`}>{s.status === 'returned' ? '되돌려받음' : '완료'}</a>
