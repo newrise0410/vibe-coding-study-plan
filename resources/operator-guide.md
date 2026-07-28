@@ -96,7 +96,7 @@ Console → Network → Application → Sources 순으로 쓸 일이 늘어나�
 미리 알고 `#공지`에 박아두면 질문이 절반으로 준다.
 
 ### Day 0
-- **Orca에 폴더가 안 붙는다** → `git init`을 안 한 것이다. Orca는 git 저장소 단위로 움직인다
+- **Orca에 폴더가 안 붙는다** → `git init`을 안 했다. Orca는 git 저장소 단위로 움직인다
 - **에이전트 콤보박스가 비어 있다** → 터미널에서 한 번 로그인해야 Orca가 찾는다. 로그인 후 재시작
 - **에이전트를 아직 안 고른 사람**이 나온다. 무료로 시작할 수 있는 선택지(Gemini CLI)를 `#공지`에 박아둘 것
 - **Vercel을 이메일로 가입** → 배포 연동이 꼬인다. "Continue with GitHub" 강조

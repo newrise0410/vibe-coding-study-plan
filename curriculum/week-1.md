@@ -44,7 +44,7 @@ script.js    동작   무슨 일이 일어나면 무엇이 바뀌는가      →
 
 ## 2. 시켜보기
 
-Orca에서 `dulkkot-store` 워크트리를 열고, 터미널 위 **에이전트 콤보박스**에서 내 에이전트를 고른다.
+Orca에서 `dulkkot-store` 워크트리를 열고 터미널 위 **에이전트 콤보박스**에서 내 에이전트를 고른다.
 그 터미널에 이렇게 넣는다:
 
 ```
@@ -241,7 +241,7 @@ body
 상품 제목을 검사하면 걸린 CSS 규칙이 **전부** 뜬다.
 **진 규칙은 취소선(~~strikethrough~~)이 그어져 있다.** 맨 위가 승자다.
 
-> 🖼 `day02-styles-strikethrough.png` — 상품 제목을 검사해 규칙 세 개가 뜨고, 진 규칙에 취소선이 그어진 Styles 패널
+> 🖼 `day02-styles-strikethrough.png` — 상품 제목을 검사해 규칙 세 개가 뜨고 진 규칙에 취소선이 그어진 Styles 패널
 
 > **이 화면이 CSS 디버깅의 90%다.** "내 CSS가 안 먹혀요"는 여기서 대부분 3초에 끝난다.
 
@@ -387,8 +387,8 @@ Flexbox 또는 Grid를 쓰고, 어떤 속성이 무슨 역할인지 주석으로
 **C. Git + 배포**
 
 1. Orca 우측 **Source Control** 패널을 연다 (Day 0에서 `git init`은 이미 했다)
-2. 바뀐 파일을 **스테이지**하고, 메시지 `Day 3: 상품 목록 반응형` → `Commit`
-3. GitHub에 빈 저장소 `dulkkot-store`를 **Public**으로 만들고, 주소를 원격으로 추가한 뒤 `Push`
+2. 바뀐 파일을 **스테이지**하고 메시지 `Day 3: 상품 목록 반응형` → `Commit`
+3. GitHub에 빈 저장소 `dulkkot-store`를 **Public**으로 만들고 주소를 원격으로 추가한 뒤 `Push`
    ```bash
    git remote add origin https://github.com/내아이디/dulkkot-store.git
    git branch -M main
@@ -633,7 +633,7 @@ app/api/products/route.js →  /api/products  ← 여기가 서버다
 npx create-next-app@latest dulkkot-next --js --eslint --no-tailwind --no-src-dir --app --no-import-alias --no-react-compiler --no-agents-md
 ```
 
-플래그 없이 실행하면 질문이 아홉 개쯤 쏟아지고, 하나만 잘못 골라도 이 스터디의 나머지가
+플래그 없이 실행하면 질문이 아홉 개쯤 쏟아지고 하나만 잘못 골라도 이 스터디의 나머지가
 안 맞게 된다. 그래서 답을 미리 정해뒀다. 각 플래그의 뜻:
 
 | 플래그 | 뜻 | 왜 |

@@ -1,6 +1,6 @@
 # 들꽃 스터디 봇
 
-GitHub Actions cron으로 도는 Discord 봇. 서버가 필요 없고, 기록은 이 repo의 `data/`에 CSV로 쌓인다.
+GitHub Actions cron으로 도는 Discord 봇. 서버가 필요 없고 기록은 이 repo의 `data/`에 CSV로 쌓인다.
 
 **봇은 감지만 하고 DM은 보내지 않는다.** `resources/operator-guide.md`가 2일차 DM을 가장 중요한 행동으로
 꼽는 이유는 그게 "구체적인 질문을 담은 개인 메시지"라서다. 봇이 자동 DM을 쏘면 그 효과가 정확히 사라진다.
@@ -29,7 +29,7 @@ GitHub Actions cron으로 도는 Discord 봇. 서버가 필요 없고, 기록은
    `Read Message History`, `Manage Roles`
 5. 나온 URL로 서버에 초대
 
-> **Manage Roles 주의**: 봇의 역할이 🌱🌿🌳🔦 역할들보다 **위**에 있어야 부여가 된다.
+> **Manage Roles 주의**: 봇의 역할이 🌱🌿🌳🔦 역할들보다 **위**에 놓여야 부여가 된다.
 > 서버 설정 → 역할에서 봇 역할을 위로 끌어올린다.
 
 ### 2. ID 채우기
