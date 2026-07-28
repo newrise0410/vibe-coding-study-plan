@@ -44,6 +44,30 @@ if (missing.length) {
   process.exit(1);
 }
 
+// 대시보드가 가려서 보여주는 표시(**** 나 ●●●●)를 그대로 복사하는 실수가 잦다.
+// 401 만 보고는 원인을 못 찾으니 여기서 먼저 잡는다.
+for (const [name, value, expected] of [
+  ['CLOUDINARY_API_SECRET', secret, 27],
+  ['CLOUDINARY_API_KEY', key, 15],
+]) {
+  const uniq = new Set([...value]);
+  if (uniq.size <= 2 && value.length < expected) {
+    console.log(`!! ${name} 이 가려진 표시(${[...uniq].join('')} 반복)입니다. 실제 값이 아닙니다.`);
+    console.log('   대시보드에서 눈 아이콘이나 Reveal 을 눌러 값을 드러낸 뒤 복사하세요.');
+    console.log('   드래그보다 복사 아이콘을 쓰는 게 안전합니다.');
+    process.exit(1);
+  }
+  if (value.length < expected - 6) {
+    console.log(`!! ${name} 이 ${value.length}자입니다. 보통 ${expected}자 안팎이라 복사가 잘린 듯합니다.`);
+    process.exit(1);
+  }
+}
+
+if (!/^\d+$/.test(key)) {
+  console.log('!! CLOUDINARY_API_KEY 는 숫자만으로 이뤄집니다. 다른 값을 복사하셨을 수 있습니다.');
+  process.exit(1);
+}
+
 if (pub !== cloud) {
   console.log('!! NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME 이 CLOUDINARY_CLOUD_NAME 과 다릅니다.');
   console.log('   같은 값이어야 합니다. 앞의 것은 브라우저용, 뒤의 것은 서버용입니다.');
