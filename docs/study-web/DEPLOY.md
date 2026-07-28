@@ -216,8 +216,16 @@ EMAIL_FROM=들꽃 스터디 <보내는계정@gmail.com>
 3. 나온 16자를 `EMAIL_PASS` 에 넣는다 (공백은 빼고)
 
 ```bash
-node lib/check-env.mjs   # '메일 로그인: 켜짐' 이 나와야 한다
+node lib/check-env.mjs      # '메일 로그인: 켜짐' 이 나와야 한다
+node lib/check-email.mjs    # SMTP 연결·인증 확인
+node lib/check-email.mjs --send   # 나에게 한 통 보내본다
 ```
+
+> **앱 비밀번호는 화면에 `xxxx xxxx xxxx xxxx` 로 보인다.** 공백째 복사돼도 스크립트가 걸러내지만,
+> 실패하면 `.env.local` 에서 공백을 지운다.
+
+> ⚠️ **값은 `.env.local` 에 넣는다. `.env.local.example` 이 아니다.**
+> example 은 공개 repo 에 커밋되는 템플릿이라, 거기 앱 비밀번호를 넣으면 그대로 올라간다.
 
 반만 채웠으면 `check-env` 가 빠진 항목을 짚어준다. 조용히 꺼지는 걸 막으려는 검사다.
 
