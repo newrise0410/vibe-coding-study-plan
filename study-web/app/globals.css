@@ -426,3 +426,36 @@ button.danger { background: transparent; color: var(--err); border: 1px solid va
 .bar { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; }
 .bar .fill { width: 100%; background: var(--accent); border-radius: 3px 3px 0 0; min-height: 2px; }
 .bar .lab, .bar .pct { font-size: 0.72rem; color: var(--muted); }
+
+/* ---- 상단 세션 바 ---- */
+.sessionbar { border-bottom: 1px solid var(--line); background: var(--card); }
+.sessionbar .inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 9px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 0.86rem;
+}
+.sessionbar .who { color: var(--fg); text-decoration: none; font-weight: 600; }
+.sessionbar .who b { color: var(--accent); font-weight: 600; }
+.sessionbar nav { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+.sessionbar nav a { color: var(--muted); text-decoration: none; }
+.sessionbar nav a:hover { color: var(--accent); }
+.sessionbar button {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+.sessionbar button:hover { border-color: var(--err); color: var(--err); }
+
+/* ---- 로그인 ---- */
+.or { display: flex; align-items: center; gap: 12px; margin: 26px 0; color: var(--muted); font-size: 0.85rem; }
+.or::before, .or::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+button.secondary { background: transparent; color: var(--fg); border: 1px solid var(--line); }
+button.secondary:hover { border-color: var(--accent); color: var(--accent); }

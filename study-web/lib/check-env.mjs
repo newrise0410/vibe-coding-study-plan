@@ -31,7 +31,14 @@ const OPTIONAL = {
   CLOUDINARY_API_SECRET: '스샷 업로드 (Day 9)',
   NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: '스샷 업로드 (Day 9)',
   NEXT_PUBLIC_CURRICULUM_URL: '퀘스트 링크가 가리킬 GitHub 주소',
+  EMAIL_HOST: '메일 로그인 (Day 10). 넷 다 있어야 켜진다',
+  EMAIL_PORT: '기본 587',
+  EMAIL_USER: '메일 로그인',
+  EMAIL_PASS: '메일 로그인. Gmail 이면 앱 비밀번호',
+  EMAIL_FROM: '메일 로그인. 보내는 사람 표시',
 };
+
+const EMAIL_KEYS = ['EMAIL_HOST', 'EMAIL_USER', 'EMAIL_PASS', 'EMAIL_FROM'];
 
 const GEN = `node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`;
 
@@ -88,6 +95,19 @@ if (dups.length) {
 if (found.get('MONGODB_URI') && !/^mongodb(\+srv)?:\/\//.test(found.get('MONGODB_URI'))) {
   bad += 1;
   console.log('\nMONGODB_URI 가 mongodb:// 또는 mongodb+srv:// 로 시작하지 않습니다');
+}
+
+// 메일 로그인은 넷을 다 채우거나 다 비워야 한다. 일부만 있으면 조용히 안 켜진다.
+const emailSet = EMAIL_KEYS.filter((k) => found.get(k));
+if (emailSet.length && emailSet.length < EMAIL_KEYS.length) {
+  bad += 1;
+  const miss = EMAIL_KEYS.filter((k) => !found.get(k)).join(', ');
+  console.log(`\n메일 로그인이 반만 설정됐습니다. 빠진 것: ${miss}`);
+  console.log('  넷을 다 채우거나 다 비우세요. 지금 상태면 메일 로그인이 조용히 꺼집니다.');
+} else if (emailSet.length === EMAIL_KEYS.length) {
+  console.log('\n메일 로그인: 켜짐');
+} else {
+  console.log('\n메일 로그인: 꺼짐 (구글 로그인만 뜹니다)');
 }
 
 console.log();

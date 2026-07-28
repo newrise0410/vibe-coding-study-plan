@@ -194,6 +194,37 @@ await fetch('/api/submissions/아무id', {
 
 ---
 
+## 5.5 메일 로그인 (선택)
+
+구글 계정이 없거나 쓰기 싫은 사람을 위해 **메일 링크 로그인**을 붙일 수 있다.
+주소만 받고 비밀번호는 안 받는다. 가입과 로그인이 같은 흐름이다.
+
+넷을 다 채워야 켜진다. 하나라도 비면 조용히 꺼지고 구글 로그인만 뜬다.
+
+```
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=보내는계정@gmail.com
+EMAIL_PASS=앱 비밀번호 16자
+EMAIL_FROM=들꽃 스터디 <보내는계정@gmail.com>
+```
+
+**Gmail 을 쓴다면** 일반 비밀번호가 아니라 **앱 비밀번호**를 만들어야 한다.
+
+1. 구글 계정에 **2단계 인증**을 켠다
+2. https://myaccount.google.com/apppasswords 에서 앱 비밀번호 생성
+3. 나온 16자를 `EMAIL_PASS` 에 넣는다 (공백은 빼고)
+
+```bash
+node lib/check-env.mjs   # '메일 로그인: 켜짐' 이 나와야 한다
+```
+
+반만 채웠으면 `check-env` 가 빠진 항목을 짚어준다. 조용히 꺼지는 걸 막으려는 검사다.
+
+Vercel 에도 넷을 넣어야 배포에서 켜진다. `sync-vercel-env.mjs` 가 `.env.local` 을 그대로 밀어 올린다.
+
+---
+
 ## 6. Cloudinary 는 나중에
 
 스샷 업로드는 코드가 다 있지만 계정 없이도 배포는 된다.
