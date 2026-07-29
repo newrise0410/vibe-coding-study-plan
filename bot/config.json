@@ -1,19 +1,19 @@
 {
-  "guild_id": "",
-  "repo_url": "https://github.com/OWNER/vibe-coding-study-plan",
+  "guild_id": "1527894994193481898",
+  "repo_url": "https://github.com/newrise0410/vibe-coding-study-plan",
 
   "channels": {
-    "quest": "",
-    "cert": "",
-    "question": "",
-    "ops": ""
+    "quest": "1531867369968763110",
+    "cert": "1531870090713370767",
+    "question": "1531870093598920714",
+    "ops": "1531867377871093951"
   },
 
   "roles": {
-    "🌱": "",
-    "🌿": "",
-    "🌳": "",
-    "🔦": ""
+    "🌱": "1531867494107709480",
+    "🌿": "1531867495772979271",
+    "🌳": "1531867497157099590",
+    "🔦": "1531867498272526369"
   },
 
   "schedule": {
