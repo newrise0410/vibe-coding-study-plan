@@ -103,6 +103,8 @@ def main():
     token = os.environ.get("DISCORD_BOT_TOKEN", "")
     if not token and not args.dry_run:
         raise SystemExit("DISCORD_BOT_TOKEN 이 없습니다")
+    # dry-run은 단순한 echo 디버그. 환경변수가 없으면 "dry-run-token" 더미를 넣고
+    # Discord._req 의 dry_run 분기에서 모든 호출을 stdout 출력으로 대체한다.
     dc = discord_api.Discord(token or "dry-run-token", dry_run=args.dry_run)
 
     state = store.load_state()

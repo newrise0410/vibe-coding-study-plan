@@ -27,11 +27,14 @@ class Discord:
     # ---------- 저수준 ----------
 
     def _req(self, method: str, path: str, body=None, retries: int = 5):
+        if self.dry_run:
+            return self._dry_req(method, path, body)
         url = path if path.startswith("http") else API + path
         data = json.dumps(body, ensure_ascii=False).encode("utf-8") if body is not None else None
         req = urllib.request.Request(url, data=data, method=method)
         req.add_header("Authorization", f"Bot {self.token}")
-        req.add_header("User-Agent", "DulkkotStudyBot/1.0 (+github-actions)")
+        # discord.py 공식 UA 패턴 — CloudFlare가 봇 패턴으로 차단 안 하는 형식
+        req.add_header("User-Agent", "DiscordBot (https://github.com/discord-py, 2.3.2)")
         if data is not None:
             req.add_header("Content-Type", "application/json")
         try:
@@ -151,6 +154,12 @@ class Discord:
             return
         self._req("PUT", f"/guilds/{guild_id}/members/{user_id}/roles/{role_id}")
         time.sleep(0.3)
+
+
+    def _dry_req(self, method, path, body):
+        """[dry-run] 외부 호출 없이 메서드/경로만 찍고 형태만 갖춘 가짜 응답."""
+        print(f"  · [dry-run] {method} {path}")
+        return {}
 
 
 def split_message(text: str, limit: int = MAX_MESSAGE):
