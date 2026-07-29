@@ -7,6 +7,9 @@
   --warn: #9a5b1e;
   --err: #a8341f;
   --card: #fff;
+  /* 강조색 위에 얹는 글자색. 밝은 초록 위에 흰 글씨를 쓰면 명도차가 2.1:1 까지
+     떨어져 안 보인다. 모드마다 대비가 서는 쪽으로 뒤집는다. */
+  --on-accent: #fff;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,6 +22,7 @@
     --warn: #d99a52;
     --err: #e08063;
     --card: #1e1c16;
+    --on-accent: #10201a; /* #7fbf9a 위에서 8.6:1 */
   }
 }
 
@@ -37,130 +41,387 @@ a { color: var(--accent); }
 .wrap.wide { max-width: 1100px; }
 .wrap.narrow { max-width: 460px; }
 
-/* ================= 랜딩 ================= */
-.landing { max-width: 760px; margin: 0 auto; padding: 0 20px 100px; }
-.landing section { padding: 52px 0; border-top: 1px solid var(--line); }
+/* ================= 랜딩 =================
+   넓은 판, 좁은 글줄. 판은 1040px 까지 벌리고 읽는 글은 62ch 안에 가둔다.
+   모서리는 --r 하나로 통일한다. 강조색은 --accent 하나만 쓴다. */
+.landing {
+  --r: 10px;
+  --measure: 62ch;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 24px 120px;
+}
+.landing section { padding: 72px 0; border-top: 1px solid var(--line); }
 .landing section:first-child { border-top: 0; }
-.landing h2 { font-size: 1.32rem; margin: 0 0 16px; letter-spacing: -0.02em; }
-.landing h3 { font-size: 0.95rem; margin: 26px 0 10px; }
-.landing .lead { color: var(--fg); opacity: 0.86; margin: 0 0 16px; }
-.landing .note { color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
+.landing h2 {
+  font-size: clamp(1.28rem, 2.4vw, 1.6rem);
+  margin: 0 0 18px;
+  letter-spacing: -0.025em;
+}
+.landing h3 { font-size: 0.95rem; margin: 0 0 12px; }
+.landing .lead {
+  color: var(--fg);
+  opacity: 0.88;
+  margin: 0 0 16px;
+  max-width: var(--measure);
+  line-height: 1.8;
+}
+.landing .note {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.75;
+  max-width: var(--measure);
+  margin: 20px 0 0;
+}
 .landing b { font-weight: 700; }
+.landing code {
+  font-size: 0.88em;
+  background: color-mix(in srgb, var(--fg) 7%, transparent);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
 
-.hero { padding: 88px 0 60px !important; }
+/* ---- 히어로: 좌 주장 / 우 스크린샷 ---- */
+.hero {
+  padding: 80px 0 56px !important;
+  display: grid;
+  gap: 48px;
+  align-items: center;
+}
+.hero:has(.hero-shot) { grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr); }
+.hero-copy { min-width: 0; }
 .kicker {
   color: var(--accent);
   font-weight: 700;
-  font-size: 0.82rem;
-  letter-spacing: 0.08em;
-  margin: 0 0 18px;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  margin: 0 0 20px;
 }
 .hero h1 {
-  font-size: clamp(1.85rem, 5.6vw, 2.9rem);
-  line-height: 1.32;
-  letter-spacing: -0.035em;
-  margin: 0 0 22px;
+  font-size: clamp(1.85rem, 4.1vw, 2.8rem);
+  line-height: 1.3;
+  letter-spacing: -0.04em;
+  margin: 0 0 24px;
+  word-break: keep-all;
+  text-wrap: balance;
 }
-.hero h1 strong { color: var(--accent); }
-.hero .sub { color: var(--muted); line-height: 1.85; margin: 0 0 32px; font-size: 1.02rem; }
+.hero h1 strong { color: var(--accent); font-weight: inherit; }
+.hero .sub {
+  color: var(--muted);
+  line-height: 1.85;
+  margin: 0 0 32px;
+  font-size: 1.02rem;
+  max-width: 54ch;
+  word-break: keep-all;
+}
+/* 사진이 아직 없으면 히어로가 판 전체를 쓴다. 제목만 넓고 본문만 좁으면
+   오른쪽이 휑해 보여서, 사진이 붙기 전까지는 글단 자체를 좁힌다. */
+.hero:not(:has(.hero-shot)) .hero-copy { max-width: 800px; }
 .hero .sub b { color: var(--fg); }
+.hero-shot { margin: 0; }
+.hero-shot img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+}
 
-.cta { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
-.cta .btn { font-size: 0.98rem; padding: 13px 26px; }
-.cta .ghost { font-size: 0.9rem; color: var(--muted); }
-.cta .note { font-size: 0.86rem; color: var(--muted); }
+/* 시작일·분량. 히어로 밖으로 빼서 히어로는 네 덩어리로 유지한다 */
+.meta-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 28px;
+  margin: 0;
+  padding: 16px 0 0;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+.meta-strip span { font-variant-numeric: tabular-nums; }
 
+.cta { display: flex; flex-wrap: wrap; align-items: center; gap: 20px; margin: 0; }
+.landing .btn {
+  border-radius: var(--r);
+  font-size: 0.98rem;
+  padding: 14px 28px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.landing .btn:hover { box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 30%, transparent); }
+.landing .btn:active { transform: translateY(1px); box-shadow: none; }
+.cta .ghost { font-size: 0.92rem; color: var(--muted); }
+
+/* ---- 전제: 통증 2단 격자 ---- */
 .band {
   background: var(--card);
-  border-radius: 10px;
-  padding: 40px 28px !important;
+  border-radius: var(--r);
+  padding: 48px 36px !important;
   border: 1px solid var(--line);
-  margin: 24px 0;
+  margin: 32px 0;
 }
-
-.pains { list-style: none; padding: 0; margin: 0 0 20px; }
+.pains {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0;
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  overflow: hidden;
+}
 .pains li {
-  padding: 9px 0 9px 20px;
-  position: relative;
-  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px;
+  background: var(--card);
   line-height: 1.65;
 }
-.pains li::before { content: '—'; position: absolute; left: 0; }
-.pains li b { color: var(--err); }
+.pains li b { font-size: 0.96rem; }
+.pains li span { color: var(--muted); font-size: 0.9rem; }
+.pains li.fatal b { color: var(--err); }
+.pains li.fatal { background: color-mix(in srgb, var(--err) 6%, var(--card)); }
 
 .punch {
-  font-size: 1.08rem;
-  line-height: 1.7;
-  margin: 24px 0 0;
-  padding-left: 16px;
+  font-size: 1.1rem;
+  line-height: 1.75;
+  margin: 28px 0 0;
+  padding-left: 18px;
   border-left: 3px solid var(--accent);
+  max-width: var(--measure);
+  word-break: keep-all;
 }
 
-.steps { list-style: none; counter-reset: s; padding: 0; margin: 0 0 20px; }
+/* ---- 퀘스트: 번호 레일 ---- */
+.steps { list-style: none; padding: 0; margin: 0; max-width: 720px; }
 .steps li {
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 12px;
-  padding: 12px 14px;
-  border-radius: 6px;
-  border: 1px solid transparent;
+  gap: 18px;
+  align-items: flex-start;
+  padding: 14px 16px 14px 0;
+  position: relative;
 }
-.steps li b { min-width: 118px; }
-.steps li span { color: var(--muted); font-size: 0.93rem; }
-.steps li.key { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 7%, transparent); }
-.steps li.key b { color: var(--accent); }
-
-.week { margin-bottom: 26px; }
-.week h3 span { color: var(--muted); font-weight: 400; margin-left: 8px; }
-.days { list-style: none; padding: 0; margin: 0; }
-.days li { display: flex; gap: 14px; padding: 7px 0; border-bottom: 1px solid var(--line); }
-.days li:last-child { border-bottom: 0; }
-.days .n { min-width: 26px; color: var(--muted); font-variant-numeric: tabular-nums; font-size: 0.9rem; }
-.days .t { font-size: 0.95rem; }
-
-.flow {
+/* 번호를 잇는 세로선 */
+.steps li:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 46px;
+  bottom: -2px;
+  width: 1px;
+  background: var(--line);
+}
+.steps .sn {
+  flex: none;
+  width: 31px;
+  height: 31px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
   background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 16px;
-  overflow-x: auto;
-  font-size: 0.86rem;
-  line-height: 1.9;
-  margin: 0 0 18px;
+  display: grid;
+  place-items: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  position: relative;
+  z-index: 1;
 }
+.steps .sb { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.steps .sb b { font-size: 1rem; }
+.steps .sb span { color: var(--muted); font-size: 0.92rem; }
+.steps li.key .sn { border-color: var(--accent); color: var(--accent); border-width: 2px; }
+.steps li.key .sb b { color: var(--accent); }
 
-.stack { list-style: none; padding: 0; margin: 0 0 18px; display: grid; gap: 2px; }
-.stack li { display: flex; flex-wrap: wrap; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
-.stack li b { min-width: 160px; }
-.stack li span { color: var(--muted); font-size: 0.92rem; }
-
-.rules { list-style: none; padding: 0; margin: 0 0 32px; }
-.rules li { padding: 10px 0 10px 20px; position: relative; line-height: 1.7; }
-.rules li::before { content: '·'; position: absolute; left: 6px; color: var(--accent); font-weight: 700; }
-
-.badges { display: grid; gap: 10px; }
-.badges > div {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 10px;
-  padding: 12px 14px;
+/* ---- 15일 지도: 주차 3단 ---- */
+.weeks {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.week {
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: var(--r);
+  padding: 22px 20px;
   background: var(--card);
 }
-.badges .mark { font-size: 1.1rem; }
-.badges .d { color: var(--muted); font-size: 0.88rem; }
+.week h3 {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+.week h3 .wm { font-size: 1rem; }
+.week h3 .wt { color: var(--muted); font-weight: 400; font-size: 0.86rem; }
+.days { list-style: none; padding: 0; margin: 0; }
+.days li { display: flex; gap: 12px; padding: 9px 0; align-items: baseline; }
+.days .n {
+  flex: none;
+  min-width: 20px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.82rem;
+}
+.days .t { font-size: 0.92rem; line-height: 1.5; word-break: keep-all; }
 
-.tail { text-align: left; }
-.tail .lead { line-height: 1.85; }
+/* ---- 만드는 것: 설명 + 흐름 ---- */
+.make { display: grid; gap: 44px; grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr); align-items: start; }
+.make-copy { min-width: 0; }
+.make-flow { display: grid; gap: 12px; min-width: 0; }
+.flowrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--card);
+  font-size: 0.86rem;
+}
+.flowrow b {
+  flex: none;
+  width: 100%;
+  color: var(--accent);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  margin-bottom: 2px;
+}
+/* .st 은 칸+화살표를 함께 감싸는 자리다. 화살표가 앞 칸에 묶여 있어야
+   줄이 바뀔 때 화살표 혼자 다음 줄 머리로 떨어지지 않는다. */
+.flowrow .st { display: inline-flex; align-items: center; }
+.flowrow .st i {
+  font-style: normal;
+  padding: 5px 11px;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--bg);
+  white-space: nowrap;
+}
+.flowrow .st:not(:last-child)::after {
+  content: '›';
+  color: var(--muted);
+  padding: 0 4px 0 8px;
+}
+.build-shot { margin: 0; }
+.build-shot img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+}
 
-@media (max-width: 560px) {
-  .landing section { padding: 40px 0; }
-  .hero { padding: 60px 0 44px !important; }
-  .band { padding: 30px 20px !important; }
-  .steps li b, .stack li b { min-width: 0; width: 100%; }
+/* ---- 쓰는 것: 8개라 목록 대신 격자 ---- */
+.stack {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.stack li {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--card);
+}
+.stack li b { font-size: 0.95rem; }
+.stack li span { color: var(--muted); font-size: 0.88rem; line-height: 1.55; }
+
+/* ---- 운영 ---- */
+.rules { list-style: none; padding: 0; margin: 0 0 36px; max-width: var(--measure); }
+.rules li {
+  padding: 12px 0 12px 22px;
+  position: relative;
+  line-height: 1.75;
+  border-bottom: 1px solid var(--line);
+}
+.rules li:last-child { border-bottom: 0; }
+.rules li::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 21px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.badges { display: grid; gap: 12px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.badges > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--card);
+}
+.badges .mark { font-size: 1.5rem; line-height: 1; margin-bottom: 4px; }
+.badges b { font-size: 1rem; }
+.badges .w { color: var(--accent); font-size: 0.82rem; font-weight: 600; }
+.badges .d { color: var(--muted); font-size: 0.88rem; line-height: 1.55; }
+
+/* ---- 마무리 ---- */
+.tail .lead { line-height: 1.85; font-size: 1.02rem; margin-bottom: 32px; }
+
+/* ---- 반응 ---- */
+@media (max-width: 900px) {
+  .hero:has(.hero-shot) { grid-template-columns: 1fr; }
+  .weeks { grid-template-columns: 1fr; }
+  .make { grid-template-columns: 1fr; gap: 32px; }
+}
+@media (max-width: 620px) {
+  .landing { padding: 0 18px 90px; }
+  .landing section { padding: 52px 0; }
+  .hero { padding: 56px 0 40px !important; gap: 32px; }
+  .band { padding: 32px 22px !important; }
+  .pains { grid-template-columns: 1fr; }
+  .stack { grid-template-columns: 1fr; }
+  .badges { grid-template-columns: 1fr; }
+  .cta { gap: 14px; }
+  .landing .btn { width: 100%; text-align: center; }
+}
+
+/* ---- 진입 연출 ----
+   위계를 만드는 용도다. 히어로가 먼저 서고, 아래 구획은 눈에 들어올 때 뜬다.
+   JS 없이 CSS 만으로 한다. 스크롤 타임라인을 모르는 브라우저에선 그냥 처음부터 보인다. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-copy > * {
+    animation: rise 0.62s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+  .hero-copy > :nth-child(2) { animation-delay: 0.06s; }
+  .hero-copy > :nth-child(3) { animation-delay: 0.12s; }
+  .hero-copy > :nth-child(4) { animation-delay: 0.18s; }
+
+  @supports (animation-timeline: view()) {
+    .landing section:not(.hero) > * {
+      animation: rise 1ms linear both;
+      animation-timeline: view();
+      /* entry 구간 안에서 끝낸다. 화면에 완전히 들어오기 전에 이미 불투명하므로
+         구획이 길거나 스크롤이 복원돼도 글이 투명한 채로 남지 않는다. */
+      animation-range: entry 4% entry 88%;
+    }
+  }
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* 인쇄·PDF 로 뽑을 때 연출이 남아 글이 사라지면 안 된다 */
+@media print {
+  .landing *, .hero-copy > * { animation: none !important; opacity: 1 !important; transform: none !important; }
 }
 
 
@@ -208,7 +469,7 @@ button {
   font: inherit;
   font-weight: 600;
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   border: 0;
   border-radius: 5px;
   padding: 12px 20px;
@@ -386,7 +647,7 @@ button.danger { background: transparent; color: var(--err); border: 1px solid va
 .questfoot { display: flex; align-items: center; gap: 16px; margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line); }
 .btn {
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   text-decoration: none;
   font-weight: 600;
   padding: 11px 20px;
